@@ -7,6 +7,7 @@ class RoundedButton extends StatelessWidget {
   final Function onPressed;
 
   const RoundedButton({
+    super.key,
     required this.name,
     required this.height,
     required this.width,
@@ -20,9 +21,9 @@ class RoundedButton extends StatelessWidget {
       width: width,
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(height * 0.25),
-          color: Color.fromRGBO(0, 82, 218, 1.0)),
+          color: const Color.fromRGBO(0, 82, 218, 1.0)),
       child: TextButton(
-        onPressed: () {},
+        onPressed: () => onPressed(),
         child: Text(
           name,
           style: const TextStyle(

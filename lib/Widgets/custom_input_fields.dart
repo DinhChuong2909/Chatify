@@ -6,7 +6,8 @@ class CustomTextFormField extends StatelessWidget {
   final String hintText;
   final bool obscureText;
 
-  CustomTextFormField({
+  const CustomTextFormField({
+    super.key,
     required this.onSaved,
     required this.regEx,
     required this.hintText,
@@ -15,7 +16,6 @@ class CustomTextFormField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return TextFormField(
       onSaved: (value) => onSaved(value!),
       cursorColor: Colors.white,

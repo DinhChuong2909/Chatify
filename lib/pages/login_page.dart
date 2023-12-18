@@ -1,8 +1,16 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:get_it/get_it.dart';
 
 // Widgets
 import '../widgets/custom_input_fields.dart';
 import '../widgets/rounded_button.dart';
+
+// Providers
+import '../providers/authentication_provider.dart';
+
+// Services
+import '../services/navigation_service.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -14,15 +22,23 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
-  late double _deviceHeight;
-  late double _deviceWidth;
+  late double deviceHeight;
+  late double deviceWidth;
 
-  final _loginFormKey = GlobalKey<FormState>();
+  late AuthenticationProvider auth;
+  late NavigationService navigation;
+
+  final loginFormKey = GlobalKey<FormState>();
+
+  String? email;
+  String? pwd;
 
   @override
   Widget build(BuildContext context) {
-    _deviceHeight = MediaQuery.of(context).size.height;
-    _deviceWidth = MediaQuery.of(context).size.width;
+    deviceHeight = MediaQuery.of(context).size.height;
+    deviceWidth = MediaQuery.of(context).size.width;
+    auth = Provider.of<AuthenticationProvider>(context);
+    navigation = GetIt.instance.get<NavigationService>();
     return _buildUI();
   }
 
@@ -30,9 +46,9 @@ class _LoginPageState extends State<LoginPage> {
     return Scaffold(
       body: Container(
         padding: EdgeInsets.symmetric(
-            horizontal: _deviceWidth * 0.03, vertical: _deviceHeight * 0.02),
-        height: _deviceHeight * 0.98,
-        width: _deviceWidth * 0.97,
+            horizontal: deviceWidth * 0.03, vertical: deviceHeight * 0.02),
+        height: deviceHeight * 0.98,
+        width: deviceWidth * 0.97,
         child: Column(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.center,
@@ -40,15 +56,15 @@ class _LoginPageState extends State<LoginPage> {
           children: [
             _pageTitle(),
             SizedBox(
-              height: _deviceHeight * 0.04,
+              height: deviceHeight * 0.04,
             ),
             _loginForm(),
             SizedBox(
-              height: _deviceHeight * 0.05,
+              height: deviceHeight * 0.05,
             ),
             _loginButton(),
             SizedBox(
-              height: _deviceHeight * 0.05,
+              height: deviceHeight * 0.05,
             ),
             _registerAccountLink(),
           ],
@@ -59,7 +75,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _pageTitle() {
     return Container(
-      height: _deviceHeight * 0.1,
+      height: deviceHeight * 0.1,
       child: const Text(
         'Chatify',
         style: TextStyle(
@@ -70,23 +86,31 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginForm() {
     return Container(
-      height: _deviceHeight * 0.18,
+      height: deviceHeight * 0.18,
       child: Form(
-          key: _loginFormKey,
+          key: loginFormKey,
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               CustomTextFormField(
-                  onSaved: (value) {},
+                  onSaved: (value) {
+                    setState(() {
+                      email = value;
+                    });
+                  },
                   regEx:
                       r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+",
                   hintText: "Email",
                   obscureText: false),
               CustomTextFormField(
-                  onSaved: (value) {},
-                  regEx: r".{8,}",
+                  onSaved: (value) {
+                    setState(() {
+                      pwd = value;
+                    });
+                  },
+                  regEx: r".{6,}",
                   hintText: "Password",
                   obscureText: true)
             ],
@@ -97,9 +121,14 @@ class _LoginPageState extends State<LoginPage> {
   Widget _loginButton() {
     return RoundedButton(
         name: "Login",
-        height: _deviceHeight * 0.065,
-        width: _deviceWidth * 0.65,
-        onPressed: () {});
+        height: deviceHeight * 0.065,
+        width: deviceWidth * 0.65,
+        onPressed: () {
+          if (loginFormKey.currentState!.validate()) {
+            loginFormKey.currentState!.save();
+            auth.loginUsingEmailAndPassword(email!, pwd!);
+          }
+        });
   }
 
   Widget _registerAccountLink() {

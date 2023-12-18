@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 // Packages
 import 'package:firebase_core/firebase_core.dart';
 import 'package:get_it/get_it.dart';
+import '../firebase_options.dart';
 
 // Services
 import '../services/navigation_service.dart';
@@ -20,7 +21,6 @@ class SplashPage extends StatefulWidget {
 
   @override
   State<StatefulWidget> createState() {
-    // TODO: implement createState
     return _SplashPageState();
   }
 }
@@ -28,7 +28,6 @@ class SplashPage extends StatefulWidget {
 class _SplashPageState extends State<SplashPage> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     Future.delayed(const Duration(seconds: 1)).then(
       (_) {
@@ -41,7 +40,6 @@ class _SplashPageState extends State<SplashPage> {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return MaterialApp(
       title: 'Chatify',
       theme: ThemeData(
@@ -70,7 +68,9 @@ class _SplashPageState extends State<SplashPage> {
 
   Future<void> _setup() async {
     WidgetsFlutterBinding.ensureInitialized();
-    await Firebase.initializeApp();
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
     _registerServices();
   }
 
