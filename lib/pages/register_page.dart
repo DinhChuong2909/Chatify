@@ -64,7 +64,7 @@ class RegisterPageState extends State<RegisterPage> {
               SizedBox(
                 height: deviceHeight * 0.05,
               ),
-              regitsetButton(),
+              registerButton(),
               SizedBox(
                 height: deviceHeight * 0.05,
               ),
