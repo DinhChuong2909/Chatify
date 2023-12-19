@@ -144,8 +144,8 @@ class RegisterPageState extends State<RegisterPage> {
   Widget registerButton() {
     return RoundedButton(
       name: "Register",
-      height: deviceWidth * 0.065,
-      width: deviceWidth * 0.065,
+      height: deviceHeight * 0.065,
+      width: deviceWidth * 0.65,
       onPressed: () async {},
     );
   }
