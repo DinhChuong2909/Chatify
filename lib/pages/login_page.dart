@@ -86,7 +86,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _loginForm() {
     return Container(
-      height: deviceHeight * 0.18,
+      height: deviceHeight * 0.2,
       child: Form(
           key: loginFormKey,
           child: Column(
@@ -133,9 +133,7 @@ class _LoginPageState extends State<LoginPage> {
 
   Widget _registerAccountLink() {
     return GestureDetector(
-      onTap: () {
-        print("Clicked!");
-      },
+      onTap: () => navigation.navigateToRoute('/register'),
       child: Container(
         child: const Text(
           'Don\'t have an account?',
