@@ -7,8 +7,41 @@ import 'package:file_picker/file_picker.dart';
 
 const String USER_COLLECTION = "Users";
 
-class CloudStorageServiec {
-  final FirebaseFirestore _storage = FirebaseFirestore.instance;
+class CloudStorageService {
+  final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  CloudStorageServiec() {}
+  CloudStorageService() {}
+
+  Future<String?> saveUserImageToStorage(String uid, PlatformFile file) async {
+    try {
+      Reference ref =
+          _storage.ref().child('images/users/$uid/profile.${file.extension}');
+      UploadTask task = ref.putFile(
+        File(file.path!),
+      );
+      return await task.then(
+        (result) => result.ref.getDownloadURL(),
+      );
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
+
+  Future<String?> saveChatImageToStorage(
+      String chatID, String uid, PlatformFile file) async {
+    try {
+      Reference ref = _storage.ref().child(
+          'images/chats/$chatID/${uid}_${Timestamp.now().millisecondsSinceEpoch}.${file.extension}');
+      UploadTask task = ref.putFile(
+        File(file.path!),
+      );
+      return await task.then(
+        (result) => result.ref.getDownloadURL(),
+      );
+    } catch (e) {
+      print(e);
+    }
+    return null;
+  }
 }

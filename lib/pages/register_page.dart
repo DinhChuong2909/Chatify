@@ -2,12 +2,15 @@ import 'package:chatify/widgets/rounded_image.dart';
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart'; // upload user image
 import 'package:get_it/get_it.dart';
+import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'dart:io';
 
 // Services
 import '../services/media_service.dart';
 import '../services/database_service.dart';
 import '../services/cloud_storage_service.dart';
+import '../services/navigation_service.dart';
 
 // Widgets
 import '../widgets/rounded_button.dart';
@@ -18,6 +21,8 @@ import '../widgets/rounded_image.dart';
 import '../providers/authentication_provider.dart';
 
 class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
+
   @override
   State<StatefulWidget> createState() {
     return RegisterPageState();
@@ -28,16 +33,25 @@ class RegisterPageState extends State<RegisterPage> {
   late double deviceWidth;
   late double deviceHeight;
 
+  late AuthenticationProvider auth;
+  late DatabaseService db;
+  late CloudStorageService cloudStorage;
+  late NavigationService navigation;
+
   String? email;
   String? name;
   String? password;
 
-  PlatformFile? profileImage;
+  Rx<PlatformFile?> profileImage = Rx<PlatformFile?>(null);
 
   final registerFormKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
+    auth = Provider.of<AuthenticationProvider>(context);
+    db = GetIt.instance.get<DatabaseService>();
+    cloudStorage = GetIt.instance.get<CloudStorageService>();
+    navigation = GetIt.instance.get<NavigationService>();
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     return buildUI();
@@ -76,16 +90,21 @@ class RegisterPageState extends State<RegisterPage> {
   Widget profileImageField() {
     return GestureDetector(
       onTap: () {
-        GetIt.instance.get<MediaService>().pickImageFromLibrary().then((file) {
-          setState(() {
-            profileImage = file;
-          });
-        });
+        GetIt.instance.get<MediaService>().pickImageFromLibrary().then(
+          (file) {
+            setState(
+              () {
+                profileImage.value = file;
+              },
+            );
+          },
+        );
       },
       child: () {
-        if (profileImage != null) {
+        PlatformFile? currentProfileImage = profileImage.value;
+        if (currentProfileImage != null) {
           return RoundedImageFile(
-              key: UniqueKey(), image: profileImage!, size: deviceWidth * 0.15);
+              key: UniqueKey(), image: currentProfileImage, size: deviceWidth * 0.15);
         } else {
           return RoundedImageNetwork(
               key: UniqueKey(),
@@ -146,7 +165,18 @@ class RegisterPageState extends State<RegisterPage> {
       name: "Register",
       height: deviceHeight * 0.065,
       width: deviceWidth * 0.65,
-      onPressed: () async {},
+      onPressed: () async {
+        if (registerFormKey.currentState!.validate() && profileImage.value != null) {
+          registerFormKey.currentState!.save();
+          String? uid =
+              await auth.registerUserUsingEmailAndPassword(email!, password!);
+          String? imageURL = await cloudStorage.saveUserImageToStorage(
+              uid!, profileImage.value!);
+          await db.createUser(uid, email!, name!, imageURL!);
+          await auth.logout();
+          await auth.loginUsingEmailAndPassword(email!, password!);
+        }
+      },
     );
   }
 }
