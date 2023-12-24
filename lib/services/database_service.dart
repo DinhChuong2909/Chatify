@@ -8,7 +8,7 @@ const String MESSGAGES_COLlECTION = "Messages";
 class DatabaseService {
   final FirebaseFirestore db = FirebaseFirestore.instance;
 
-  DatabaseService() {}
+  DatabaseService();
 
   Future<void> createUser(
       String uid, String email, String name, String imageURL) async {
@@ -16,9 +16,9 @@ class DatabaseService {
       await db.collection(USER_COLLECTION).doc(uid).set(
         {
           "email": email,
+          "name": name,
           "image": imageURL,
           "last_active": DateTime.now().toUtc(),
-          "name": name,
         },
       );
     } catch (e) {

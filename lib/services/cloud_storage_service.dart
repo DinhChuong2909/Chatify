@@ -10,7 +10,7 @@ const String USER_COLLECTION = "Users";
 class CloudStorageService {
   final FirebaseStorage _storage = FirebaseStorage.instance;
 
-  CloudStorageService() {}
+  CloudStorageService();
 
   Future<String?> saveUserImageToStorage(String uid, PlatformFile file) async {
     try {
@@ -25,14 +25,14 @@ class CloudStorageService {
     } catch (e) {
       print(e);
     }
-    return null;
+    return "";
   }
 
   Future<String?> saveChatImageToStorage(
       String chatID, String uid, PlatformFile file) async {
     try {
       Reference ref = _storage.ref().child(
-          'images/chats/$chatID/${uid}_${Timestamp.now().millisecondsSinceEpoch}.${file.extension}');
+          'images/chats/$chatID/${uid}_${Timestamp.now().microsecondsSinceEpoch}/profile.${file.extension}');
       UploadTask task = ref.putFile(
         File(file.path!),
       );
@@ -42,6 +42,6 @@ class CloudStorageService {
     } catch (e) {
       print(e);
     }
-    return null;
+    return "";
   }
 }

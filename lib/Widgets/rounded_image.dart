@@ -1,4 +1,4 @@
-import 'dart:ffi';
+import 'dart:io';
 
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
@@ -10,7 +10,7 @@ class RoundedImageNetwork extends StatelessWidget {
   const RoundedImageNetwork({ // Constructor
     required Key key,
     required this.imgPath,
-    required this.size
+    required this.size,
   }) : super(key: key);
 
   @override
@@ -41,14 +41,13 @@ class RoundedImageFile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    String? imagePath = image.path;
     return Container(
       height: size,
       width: size,
       decoration: BoxDecoration(
         image: DecorationImage(
           fit: BoxFit.cover,
-          image: AssetImage(imagePath!),
+          image: FileImage(File(image.path!)),
         ),
         borderRadius: BorderRadius.all(
           Radius.circular(size),

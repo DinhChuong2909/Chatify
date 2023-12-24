@@ -11,7 +11,6 @@ class AuthenticationProvider extends ChangeNotifier {
   late final FirebaseAuth auth;
   late final NavigationService navigationService;
   late final DatabaseService databaseService;
-
   late ChatUser user;
 
   AuthenticationProvider() {
@@ -48,18 +47,20 @@ class AuthenticationProvider extends ChangeNotifier {
     } on FirebaseAuthException {
       print("Error loggin user into Firebase");
     } catch (e) {
-      print(e);
+      // print(e);
     }
   }
 
-  Future<String?> registerUserUsingEmailAndPassword(String email, String pwd) async {
+  Future<String?> registerUserUsingEmailAndPassword(
+      String email, String pwd) async {
     try {
-      UserCredential credential = await auth.createUserWithEmailAndPassword(email: email, password: pwd);
+      UserCredential credential = await auth.createUserWithEmailAndPassword(
+          email: email, password: pwd);
       return credential.user!.uid;
-    } on FirebaseAuthException{
+    } on FirebaseAuthException {
       print("Error register user");
     } catch (e) {
-      print(e);
+      // print(e);
     }
     return null;
   }

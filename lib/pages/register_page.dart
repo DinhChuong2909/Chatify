@@ -4,7 +4,6 @@ import 'package:file_picker/file_picker.dart'; // upload user image
 import 'package:get_it/get_it.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
-import 'dart:io';
 
 // Services
 import '../services/media_service.dart';
@@ -101,17 +100,18 @@ class RegisterPageState extends State<RegisterPage> {
         );
       },
       child: () {
-        PlatformFile? currentProfileImage = profileImage.value;
-        if (currentProfileImage != null) {
-          return RoundedImageFile(
-              key: UniqueKey(), image: currentProfileImage, size: deviceWidth * 0.15);
+        PlatformFile? currentProfileImage;
+        if (profileImage.value != null) {
+          currentProfileImage = profileImage.value!;
         } else {
-          return RoundedImageNetwork(
-              key: UniqueKey(),
-              imgPath:
-                  "https://media.gcflearnfree.org/ctassets/topics/246/share_flower_fullsize.jpg",
-              size: deviceHeight * 0.15);
+          currentProfileImage = PlatformFile(
+              name: "default.jpg", size: 0, path: "assets/images/default.jpg");
         }
+
+        return RoundedImageFile(
+            key: UniqueKey(),
+            image: currentProfileImage,
+            size: deviceWidth * 0.15);
       }(),
     );
   }
@@ -166,7 +166,8 @@ class RegisterPageState extends State<RegisterPage> {
       height: deviceHeight * 0.065,
       width: deviceWidth * 0.65,
       onPressed: () async {
-        if (registerFormKey.currentState!.validate() && profileImage.value != null) {
+        if (registerFormKey.currentState!.validate() &&
+            profileImage.value != null) {
           registerFormKey.currentState!.save();
           String? uid =
               await auth.registerUserUsingEmailAndPassword(email!, password!);
@@ -175,6 +176,7 @@ class RegisterPageState extends State<RegisterPage> {
           await db.createUser(uid, email!, name!, imageURL!);
           await auth.logout();
           await auth.loginUsingEmailAndPassword(email!, password!);
+          navigation.removeAndNavigateToRoute("/login");
         }
       },
     );
