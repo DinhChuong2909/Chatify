@@ -2,7 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
 // Pages
-import './chat_page.dart';
+import './chats_page.dart';
 import './users_page.dart';
 import './settings_page.dart';
 

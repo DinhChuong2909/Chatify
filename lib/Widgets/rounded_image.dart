@@ -7,7 +7,8 @@ class RoundedImageNetwork extends StatelessWidget {
   final String imgPath;
   final double size;
 
-  const RoundedImageNetwork({ // Constructor
+  const RoundedImageNetwork({
+    // Constructor
     required Key key,
     required this.imgPath,
     required this.size,
@@ -33,11 +34,9 @@ class RoundedImageFile extends StatelessWidget {
   final PlatformFile image;
   final double size;
 
-  const RoundedImageFile({
-    required Key key,
-    required this.image,
-    required this.size
-  }) : super(key: key);
+  const RoundedImageFile(
+      {required Key key, required this.image, required this.size})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -54,6 +53,36 @@ class RoundedImageFile extends StatelessWidget {
         ),
         color: Colors.black,
       ),
+    );
+  }
+}
+
+class RoundedImageNetworkWithStatus extends RoundedImageNetwork {
+  final bool isActive;
+
+  RoundedImageNetworkWithStatus({
+    required Key key,
+    required String imgPath,
+    required double size,
+    required this.isActive,
+  }) : super(key: key, imgPath: imgPath, size: size);
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      clipBehavior: Clip.none,
+      alignment: Alignment.bottomRight,
+      children: [
+        super.build(context),
+        Container(
+          height: size * 0.2,
+          width: size * 0.2,
+          decoration: BoxDecoration(
+            color: isActive ? Colors.green : Colors.red,
+            borderRadius: BorderRadius.circular(size),
+          ),
+        ),
+      ],
     );
   }
 }
