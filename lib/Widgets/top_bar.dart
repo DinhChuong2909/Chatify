@@ -39,7 +39,7 @@ class TopBar extends StatelessWidget {
   Widget titleBar() {
     return Text(
       barTitle,
-      overflow: TextOverflow.ellipsis,
+      overflow: TextOverflow.clip,
       style: TextStyle(
         color: Colors.white,
         fontSize: fontSize,

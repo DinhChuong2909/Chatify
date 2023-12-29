@@ -16,7 +16,7 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   int currentPage = 0;
   final List<Widget> pages = [
-    const ChatPage(),
+    const ChatsPage(),
     const UsersPage(),
     const SettingsPage(),
   ];

@@ -1,7 +1,6 @@
 import 'dart:async';
 
 // Packages
-import 'package:chatify/pages/chats_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get_it/get_it.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -21,7 +20,6 @@ class ChatsPageProvider extends ChangeNotifier {
   AuthenticationProvider auth;
 
   late DatabaseService db;
-
   List<Chat>? chats;
 
   late StreamSubscription chatStream;
@@ -49,9 +47,12 @@ class ChatsPageProvider extends ChangeNotifier {
               List<ChatUser> members = [];
               for (var uid in chatData["members"]) {
                 DocumentSnapshot userSnapshot = await db.getUser(uid);
-                Map<String, dynamic> userData =
-                    userSnapshot.data() as Map<String, dynamic>;
-                members.add(ChatUser.fromJSON(userData));
+                if (userSnapshot.data() != null) {
+                  Map<String, dynamic> userData =
+                  userSnapshot.data() as Map<String, dynamic>;
+                  userData["uid"] = userSnapshot.id;
+                  members.add(ChatUser.fromJSON(userData));
+                }
               }
               // Get Last Message
               List<ChatMessage> messages = [];

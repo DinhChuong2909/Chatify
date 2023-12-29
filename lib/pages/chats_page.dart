@@ -15,27 +15,35 @@ import '../widgets/custom_list_view_tiles.dart';
 import '../models/chat.dart';
 import '../models/chat_message.dart';
 
-class ChatPage extends StatefulWidget {
-  const ChatPage({super.key});
+// Services
+import '../services/navigation_service.dart';
+
+// Pages
+import '../pages/chat_page.dart';
+
+class ChatsPage extends StatefulWidget {
+  const ChatsPage({super.key});
 
   @override
   State<StatefulWidget> createState() {
-    return ChatPageState();
+    return ChatsPageState();
   }
 }
 
-class ChatPageState extends State<ChatPage> {
+class ChatsPageState extends State<ChatsPage> {
   late double deviceHeight;
   late double deviceWidth;
 
   late AuthenticationProvider auth;
   late ChatsPageProvider pageProvider;
+  late NavigationService navigation;
 
   @override
   Widget build(BuildContext context) {
     deviceHeight = MediaQuery.of(context).size.height;
     deviceWidth = MediaQuery.of(context).size.width;
     auth = Provider.of<AuthenticationProvider>(context);
+    navigation = GetIt.instance.get<NavigationService>();
     return MultiProvider(
       providers: [
         ChangeNotifierProvider<ChatsPageProvider>(
@@ -128,7 +136,11 @@ class ChatPageState extends State<ChatPage> {
       imgPath: chat.imageURL(),
       isActive: isActive,
       isActitivy: chat.activity,
-      onTap: () {},
+      onTap: () {
+        navigation.navigateToPage(
+          ChatPage(chat: chat),
+        );
+      },
     );
   }
 }

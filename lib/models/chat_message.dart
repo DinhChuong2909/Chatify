@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 enum MessageType {
@@ -11,13 +10,13 @@ class ChatMessage {
   final String senderID;
   final MessageType type;
   final String content;
-  final DateTime sendTime;
+  final DateTime sentTime;
 
   ChatMessage({
     required this.senderID,
     required this.type,
     required this.content,
-    required this.sendTime,
+    required this.sentTime,
   });
 
   factory ChatMessage.fromJSON(Map<String, dynamic> json) {
@@ -36,7 +35,7 @@ class ChatMessage {
       senderID: json['sender_id'],
       type: messageType,
       content: json['content'],
-      sendTime: json['sent_time'].toDate(),
+      sentTime: json['sent_time'].toDate(),
     );
   }
 
@@ -56,7 +55,7 @@ class ChatMessage {
       "content": content,
       "type": messageType,
       "sender_id": senderID,
-      "sent_time": Timestamp.fromDate(sendTime),
+      "sent_time": Timestamp.fromDate(sentTime),
     };
   }
 }
